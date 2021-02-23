@@ -20,7 +20,7 @@ const userSchema = new Schema ({
             validator: function (v) {
                 return //.test(v);
             },
-            message
+            message: 'Не верные данные',
         }
     }
 })

@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose');
+const { ObjectId } = require('mongodb');
 
 const cardSchema = new Schema ({
     name: {
@@ -14,7 +15,7 @@ const cardSchema = new Schema ({
             validator: function (v) {
                 return /(:?(?:https?:\/\/)?(?:www\.)?)?[-a-z0-9]+\.\w/g.test(v);
             },
-            message
+            message: 'Не верные данные',
         }
     },
     owner: {

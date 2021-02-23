@@ -1,24 +1,27 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path');
-const usersRouter = require('./routes/users.js');
-const cardsRouter = require('./routes/cards.js');
-const app = express();
+const express = require("express");
+const mongoose = require("mongoose");
+const path = require("path");
+const usersRouter = require("./routes/users.js");
+const cardsRouter = require("./routes/cards.js");
+const bodyParser = require('body-parser');
 
-mongoose.connect('mongodb://localhost:27017/mestodb' , {
+const app = express();
+mongoose.connect('mongodb://localhost:27017/mestodb', {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useFindAndModify: false
+    useFindAndModify: false,
 });
 
 const { PORT = 3000 } = process.env;
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/', usersRouter, cardsRouter);
+app.use(bodyParser.json());
 
-app.use('*', (req, res) => {
-    res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
+app.use("/", usersRouter, cardsRouter);
+
+app.use("*", (req, res) => {
+    res.status(404).send({ message: "Запрашиваемый ресурс не найден" });
 });
 
-app.listen(PORT)
+app.listen(PORT);
