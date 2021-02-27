@@ -17,10 +17,12 @@ const userSchema = new Schema ({
         type: String,
         required: true,
         validate: {
-            validator: function (v) {
-                return //.test(v);
+            validator(v) {
+                console.log(v)
+                const regExpForUelValidate = /^((http|https):\/\/)(www\.)?([\w\W\d]{1,})(\.)([\w\W\d]{1,})$/g
+                return regExpForUelValidate.test(v)
             },
-            message: 'Не верные данные',
+            message: "Введите корректную ссылку",
         }
     }
 })
