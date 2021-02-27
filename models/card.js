@@ -13,9 +13,8 @@ const cardSchema = new Schema ({
         required: true,
         validate: {
             validator(v) {
-                console.log(v)
-                const regExpForUelValidate = /^((http|https):\/\/)(www\.)?([\w\W\d]{1,})(\.)([\w\W\d]{1,})$/g
-                return regExpForUelValidate.test(v)
+                const regExpForUrlValidate = /^((http|https):\/\/)(www\.)?([\w\W\d]{1,})(\.)([\w\W\d]{1,})$/g
+                return regExpForUrlValidate.test(v)
             },
             message: "Введите корректную ссылку",
         }
