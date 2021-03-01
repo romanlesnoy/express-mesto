@@ -1,37 +1,35 @@
-const {Schema, model} = require('mongoose');
-const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
 
-const cardSchema = new Schema ({
-    name: {
-        type: String,
-        required: true,
-        minlength: 2,
-        maxlength: 30,
+const cardSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 30,
+  },
+  link: {
+    type: String,
+    required: true,
+    validate: {
+      validator(v) {
+        const regExpForUrlValidate = /^((http|https):\/\/)(www\.)?([\w\W\d]{1,})(\.)([\w\W\d]{1,})$/g;
+        return regExpForUrlValidate.test(v);
+      },
+      message: 'Введите корректную ссылку',
     },
-    link: {
-        type: String,
-        required: true,
-        validate: {
-            validator(v) {
-                const regExpForUrlValidate = /^((http|https):\/\/)(www\.)?([\w\W\d]{1,})(\.)([\w\W\d]{1,})$/g
-                return regExpForUrlValidate.test(v)
-            },
-            message: "Введите корректную ссылку",
-        }
-    },
-    owner: {
-        type: ObjectId,
-        required: true,
-    },
-    likes: {
-        type: [ObjectId],
-        required: true,
-        default: [],
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-})
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
+  likes: {
+    type: [mongoose.Schema.Types.ObjectId],
+    default: [],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-module.exports = model('card', cardSchema);
+module.exports = mongoose.model('card', cardSchema);
