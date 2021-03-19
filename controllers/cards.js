@@ -1,5 +1,6 @@
 const Card = require('../models/card');
-const { customError } = require('../errors/errors');
+const { customError } = require('../errors/customErrors');
+const { errorHandler } = require('../errors/errorHandler');
 
 const getCards = (req, res) => {
   Card.find({})
@@ -65,6 +66,7 @@ const likeCard = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Переданны некорректные данные' });
       } else if (err.statusCode === 404) {
+        console.log(err);
         res.status(err.statusCode).send({ message: `${err.message}` });
       } else {
         res.status(500).send({ message: `Произошла ошибка сервера ${err}` });

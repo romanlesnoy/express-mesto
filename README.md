@@ -31,4 +31,4 @@
     npm run start
     ```
 
-Также для работы с приложением вам понадобиться [MongoDB](https://docs.mongodb.com/manual/administration/install-community/)), и для взаимодействие с Mongo [Compass](https://www.mongodb.com/try/download/compass)
+Также для работы с приложением вам понадобиться [MongoDB](https://docs.mongodb.com/manual/administration/install-community/), и для взаимодействие с Mongo [Compass](https://www.mongodb.com/try/download/compass)

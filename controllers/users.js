@@ -1,5 +1,6 @@
 const User = require('../models/user');
-const { customError } = require('../errors/errors');
+const { customError } = require('../errors/customErrors');
+const { errorHandler } = require('../errors/errorHandler');
 
 const getUsers = (req, res) => {
   User.find({})
@@ -53,6 +54,9 @@ const updateProfile = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
+        const errorData = errorHandler(err);
+        const {status, message} = errorData;
+        console.log(errorData);
         res.status(400).send({ message: 'Переданны некорректные данные' });
       } else {
         res.status(500).send({
