@@ -1,12 +1,34 @@
-# Проект Mesto фронтенд + бэкенд
+# Проект Mesto бэкенд
 
-## Директории
+### Описание
 
-`/routes` — папка с файлами роутера  
-  
-Остальные директории вспомогательные, создаются при необходимости разработчиком
+Бекенд для проекта [Mesto](https://github.com/romanlesnoy/react-mesto-auth) 
 
-## Запуск проекта
+Отвечает за авторизицию пользователей на сайте. Сохранение данных пользователя и карточек с изображениями в базе mongoDB. 
+Взаимодействие с базой данных происходит с помощью mongoose. Для валидации запросов используется celebrate. Пароли шифруются bcryptjs.
+Централизованная обработка ошибок.
 
-`npm run start` — запускает сервер   
-`npm run dev` — запускает сервер с hot-reload
+### Стек
+
+- Javascript
+- Node.js
+- Express.js
+- mongoose
+- MongoDB
+
+### Запуск приложения
+
+- Клонировать репозиторий
+    ```bash
+    $ git clone https://github.com/romanlesnoy/express-mesto.git
+    ```
+- Перейти в директорию проекта и установить записимости
+    ```bash
+    $ cd express-mesto && npm install
+    ```
+- Запустить приложение
+    ```bash
+    npm run start
+    ```
+
+Также для работы с приложением вам понадобиться [MongoDB](https://docs.mongodb.com/manual/administration/install-community/)), и для взаимодействие с Mongo [Compass](https://www.mongodb.com/try/download/compass)
