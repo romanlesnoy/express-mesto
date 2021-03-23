@@ -50,6 +50,7 @@ const updateProfile = (req, res) => {
     { runValidators: true, new: true },
   )
     .then((updateProfileData) => {
+      console.log(updateProfileData);
       res.status(200).send(updateProfileData);
     })
     .catch((err) => {
