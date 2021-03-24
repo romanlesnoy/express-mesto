@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const usersRouter = require('./routes/users.js');
 const cardsRouter = require('./routes/cards.js');
-// const cookieParser = require('cookie-parser');
+const auth = require('./middlewares/auth');
 const {login,  createProfile} = require('./controllers/users');
 
 const app = express();
@@ -28,6 +28,7 @@ app.use((req, res, next) => {
 
 app.post('/signin', login);
 app.post('/signup', createProfile);
+app.use(auth);
 app.use('/', usersRouter, cardsRouter);
 
 
