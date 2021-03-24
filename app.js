@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const usersRouter = require('./routes/users.js');
 const cardsRouter = require('./routes/cards.js');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
+const {login,  createProfile} = require('./controllers/users');
 
 const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -14,7 +15,10 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 const { PORT = 3000 } = process.env;
 
-app.use(cookieParser());
+app.post('/signin', login);
+app.post('/signup', createProfile);
+
+// app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
