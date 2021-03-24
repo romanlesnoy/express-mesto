@@ -2,6 +2,7 @@ const User = require("../models/user");
 const { customError } = require("../errors/customErrors");
 const { errorHandler } = require("../errors/errorHandler");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -51,10 +52,8 @@ const createProfile = (req, res) => {
     })
     .then((user) => {
       res.status(200).send(user);
-      console.log(user);
     })
     .catch((err) => {
-      console.log(err)
       if (err.name === "ValidationError") {
         res.status(400).send({ message: "Переданны некорректные данные" });
       } else {
@@ -109,10 +108,24 @@ const updateProfileAvatar = (req, res) => {
     });
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token =  jwt.sign({ _id: user._id }, "super-strong-secret", {expiresIn: "7d" });
+      console.log({ token, name: user.name, email: user.email })
+      res.status(200).send({ token, name: user.name, email: user.email });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: 'Неправильные почта или пароль' });
+    });
+};
+
 module.exports = {
   getUsers,
   getProfile,
   createProfile,
   updateProfile,
   updateProfileAvatar,
+  login,
 };
