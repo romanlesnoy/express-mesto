@@ -18,7 +18,9 @@ const getUser = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError("Данные не найдены");
     })
-    .then((users) => res.status(200).send(users))
+    .then((user) => {
+      res.status(200).send(user);
+    })
     .catch((err) => next(err));
 };
 
@@ -37,11 +39,11 @@ const getProfile = (req, res, next) => {
 
 const createProfile = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
-  if (req.body.password.lenght < 8) {
-    throw new ValidationError("Минимальная длина пароля 8 символов");
-  }
   if (!email || !password) {
-    throw new ValidationError("Не передан имейл или пароль")
+    throw new ValidationError("Не передан имейл или пароль");
+  }
+  if (password.lenght < 8) {
+    throw new ValidationError("Минимальная длина пароля 8 символов");
   }
   bcrypt
     .hash(password, 10)
@@ -58,8 +60,16 @@ const createProfile = (req, res, next) => {
       res.status(200).send({ user });
     })
     .catch((err) => {
+      console.log(err);
       if (err.name === "MongoError") {
         next(new ConflictError("Такой пользователь уже существует"));
+      }
+      if (err.name === "ValidationError") {
+        next(
+          new ValidationError(
+            err.message.replace("user validation failed: ", " ")
+          )
+        );
       }
       next(err);
     });
@@ -87,6 +97,9 @@ const updateProfile = (req, res, next) => {
     { name, about },
     { runValidators: true, new: true }
   )
+    .orFail(() => {
+      throw new ValidationError("Переданы неверные данные");
+    })
     .then((updateProfileData) => {
       console.log(updateProfileData);
       res.status(200).send(updateProfileData);
@@ -106,6 +119,9 @@ const updateProfileAvatar = (req, res, next) => {
     { avatar },
     { runValidators: true, new: true }
   )
+    .orFail(() => {
+      throw new ValidationError("Переданы неверные данные");
+    })
     .then((updateProfileData) => {
       res.status(200).send(updateProfileData);
     })

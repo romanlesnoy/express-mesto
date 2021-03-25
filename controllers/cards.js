@@ -40,6 +40,9 @@ const deleteCard = (req, res, next) => {
       res.status(200).send({ message: "Карточка удалена" });
     })
     .catch((err) => {
+      if (err.name === "CastError") {
+        next(new ValidationError("Переданы некоректные данные"));
+      }
       next(err);
     });
 };
