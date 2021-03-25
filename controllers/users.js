@@ -12,6 +12,18 @@ const getUsers = (req, res) => {
     );
 };
 
+const getUser = (req, res) => {
+  const id =  req.user._id;
+  User.findById(id)
+    .orFail(() => {
+      customError("Данные не найдены");
+    })
+    .then((users) => res.status(200).send(users))
+    .catch((err) =>
+      res.status(500).send({ message: `Произошла ошибка сервера ${err}` })
+    );
+};
+
 const getProfile = (req, res) => {
   User.findById({ _id: req.params.id })
     .orFail(() => {
@@ -33,8 +45,8 @@ const getProfile = (req, res) => {
 
 const createProfile = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
-  if (password.lenght < 8) {
-    customError("Минимальная длина пароля 8 символов");
+  if (req.body.password.lenght < 8) {
+    return customError("Минимальная длина пароля 8 символов");
   }
   if (!email || !password) {
     return res.status(400).send({ message: "Не передан имейл или пароль" });
@@ -51,7 +63,7 @@ const createProfile = (req, res) => {
       });
     })
     .then((user) => {
-      res.status(200).send(user);
+      res.status(200).send({user});
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -59,6 +71,19 @@ const createProfile = (req, res) => {
       } else {
         res.status(500).send({ message: `Произошла ошибка сервера ${err}` });
       }
+    });
+};
+
+const login = (req, res) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token =  jwt.sign({ _id: user._id }, "super-strong-secret", {expiresIn: "7d" });
+      console.log({ token, name: user.name, email: user.email })
+      res.status(200).send({ token, name: user.name, email: user.email });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: 'Неправильные почта или пароль' });
     });
 };
 
@@ -108,21 +133,9 @@ const updateProfileAvatar = (req, res) => {
     });
 };
 
-const login = (req, res) => {
-  const { email, password } = req.body;
-  User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token =  jwt.sign({ _id: user._id }, "super-strong-secret", {expiresIn: "7d" });
-      console.log({ token, name: user.name, email: user.email })
-      res.status(200).send({ token, name: user.name, email: user.email });
-    })
-    .catch((err) => {
-      res.status(401).send({ message: 'Неправильные почта или пароль' });
-    });
-};
-
 module.exports = {
   getUsers,
+  getUser,
   getProfile,
   createProfile,
   updateProfile,
