@@ -29,9 +29,14 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndRemove({ _id: req.params.cardId })
-    .orFail(() => {
-      customError('Данные не найдены');
+  const owner = req.user._id;
+  Card.findOne({ _id: req.params.cardId })
+    .orFail(() =>  customError('Данные не найдены'))
+    .then((card) => {
+      if (String(card.owner) !== owner) {
+        customError('Недостаточно прав!');
+      }
+      return Card.findByIdAndRemove(card._id)
     })
     .then(() => {
       res.status(200).send({ message: 'Карточка удалена' });
