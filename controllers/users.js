@@ -38,6 +38,7 @@ const getProfile = (req, res, next) => {
 
 const createProfile = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
+  console.log(name, about, avatar, email, password)//удалить позже
   bcrypt
     .hash(password, 10)
     .then((hash) => {
@@ -50,6 +51,7 @@ const createProfile = (req, res, next) => {
       });
     })
     .then((user) => {
+      console.log(user)//удалить позже
       res.status(200).send({ user });
     })
     .catch((err) => {
