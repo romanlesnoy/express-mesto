@@ -39,12 +39,6 @@ const getProfile = (req, res, next) => {
 
 const createProfile = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
-  if (!email || !password) {
-    throw new ValidationError("Не передан имейл или пароль");
-  }
-  if (password.lenght < 8) {
-    throw new ValidationError("Минимальная длина пароля 8 символов");
-  }
   bcrypt
     .hash(password, 10)
     .then((hash) => {
@@ -60,16 +54,8 @@ const createProfile = (req, res, next) => {
       res.status(200).send({ user });
     })
     .catch((err) => {
-      console.log(err);
       if (err.name === "MongoError") {
         next(new ConflictError("Такой пользователь уже существует"));
-      }
-      if (err.name === "ValidationError") {
-        next(
-          new ValidationError(
-            err.message.replace("user validation failed: ", " ")
-          )
-        );
       }
       next(err);
     });
@@ -83,10 +69,10 @@ const login = (req, res, next) => {
         expiresIn: "7d",
       });
       console.log({ token, name: user.name, email: user.email });
-      res.status(200).send({ token, name: user.name, email: user.email });
+      res.status(200).send({ token });
     })
     .catch((err) => {
-      next(new AuthError("Неверные почта или пароль"));
+      next(err);
     });
 };
 
@@ -105,9 +91,6 @@ const updateProfile = (req, res, next) => {
       res.status(200).send(updateProfileData);
     })
     .catch((err) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
-        next(new ValidationError("Переданы неверные данные"));
-      }
       next(err);
     });
 };
@@ -126,9 +109,6 @@ const updateProfileAvatar = (req, res, next) => {
       res.status(200).send(updateProfileData);
     })
     .catch((err) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
-        next(new ValidationError("Переданы неверные данные"));
-      }
       next(err);
     });
 };

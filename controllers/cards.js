@@ -1,6 +1,5 @@
 const Card = require("../models/card");
 const NotFoundError = require("../errors/not-found-error");
-const ValidationError = require("../errors/validation-error");
 const ForbiddenError = require("../errors/forbidden-error");
 
 const getCards = (req, res, next) => {
@@ -17,9 +16,6 @@ const createCard = (req, res, next) => {
       res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        next(new ValidationError("Переданны некорректные данные"));
-      }
       next(err);
     });
 };
@@ -40,9 +36,6 @@ const deleteCard = (req, res, next) => {
       res.status(200).send({ message: "Карточка удалена" });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        next(new ValidationError("Переданы некоректные данные"));
-      }
       next(err);
     });
 };
