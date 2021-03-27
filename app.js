@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors')
+const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors, celebrate, Joi } = require('celebrate');
@@ -7,7 +7,7 @@ const usersRouter = require('./routes/users.js');
 const cardsRouter = require('./routes/cards.js');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const {login,  createProfile} = require('./controllers/users');
+const { login, createProfile } = require('./controllers/users');
 
 const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -18,7 +18,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 const { PORT = 3000 } = process.env;
 
-app.use(cors())
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use(requestLogger);

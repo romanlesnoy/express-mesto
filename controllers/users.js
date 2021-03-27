@@ -1,9 +1,9 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const NotFoundError = require("../errors/not-found-error");
-const ValidationError = require("../errors/validation-error");
-const ConflictError = require("../errors/conflict-error");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+const NotFoundError = require('../errors/not-found-error');
+const ValidationError = require('../errors/validation-error');
+const ConflictError = require('../errors/conflict-error');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -15,7 +15,7 @@ const getUser = (req, res, next) => {
   const id = req.user._id;
   User.findById(id)
     .orFail(() => {
-      throw new NotFoundError("Данные не найдены");
+      throw new NotFoundError('Данные не найдены');
     })
     .then((user) => {
       res.status(200).send(user);
@@ -26,7 +26,7 @@ const getUser = (req, res, next) => {
 const getProfile = (req, res, next) => {
   User.findById({ _id: req.params.id })
     .orFail(() => {
-      throw new NotFoundError("Нет пользователя с таким id");
+      throw new NotFoundError('Нет пользователя с таким id');
     })
     .then((user) => {
       res.status(200).send(user);
@@ -37,26 +37,25 @@ const getProfile = (req, res, next) => {
 };
 
 const createProfile = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
-  console.log(name, about, avatar, email, password)//удалить позже
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+
   bcrypt
     .hash(password, 10)
-    .then((hash) => {
-      return User.create({
-        name,
-        about,
-        avatar,
-        email,
-        password: hash,
-      });
-    })
+    .then((hash) => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    }))
     .then((user) => {
-      console.log(user)//удалить позже
       res.status(200).send({ user });
     })
     .catch((err) => {
-      if (err.name === "MongoError") {
-        next(new ConflictError("Такой пользователь уже существует"));
+      if (err.name === 'MongoError') {
+        next(new ConflictError('Такой пользователь уже существует'));
       }
       next(err);
     });
@@ -66,10 +65,9 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, "super-strong-secret", {
-        expiresIn: "7d",
+      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', {
+        expiresIn: '7d',
       });
-      console.log({ token, name: user.name, email: user.email });
       res.status(200).send({ token });
     })
     .catch((err) => {
@@ -82,13 +80,12 @@ const updateProfile = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
-    { runValidators: true, new: true }
+    { runValidators: true, new: true },
   )
     .orFail(() => {
-      throw new ValidationError("Переданы неверные данные");
+      throw new ValidationError('Переданы неверные данные');
     })
     .then((updateProfileData) => {
-      console.log(updateProfileData);
       res.status(200).send(updateProfileData);
     })
     .catch((err) => {
@@ -101,10 +98,10 @@ const updateProfileAvatar = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { avatar },
-    { runValidators: true, new: true }
+    { runValidators: true, new: true },
   )
     .orFail(() => {
-      throw new ValidationError("Переданы неверные данные");
+      throw new ValidationError('Переданы неверные данные');
     })
     .then((updateProfileData) => {
       res.status(200).send(updateProfileData);

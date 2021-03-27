@@ -1,6 +1,6 @@
-const Card = require("../models/card");
-const NotFoundError = require("../errors/not-found-error");
-const ForbiddenError = require("../errors/forbidden-error");
+const Card = require('../models/card');
+const NotFoundError = require('../errors/not-found-error');
+const ForbiddenError = require('../errors/forbidden-error');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -24,16 +24,16 @@ const deleteCard = (req, res, next) => {
   const owner = req.user._id;
   Card.findOne({ _id: req.params.cardId })
     .orFail(() => {
-      throw new NotFoundError("Данные не найдены");
+      throw new NotFoundError('Данные не найдены');
     })
     .then((card) => {
       if (String(card.owner) !== owner) {
-        throw new ForbiddenError("Недостаточно прав");
+        throw new ForbiddenError('Недостаточно прав');
       }
       return Card.findByIdAndRemove(card._id);
     })
     .then(() => {
-      res.status(200).send({ message: "Карточка удалена" });
+      res.status(200).send({ message: 'Карточка удалена' });
     })
     .catch((err) => {
       next(err);
@@ -47,7 +47,7 @@ const likeCard = (req, res, next) => {
     { new: true }
   )
     .orFail(() => {
-      throw new NotFoundError("Данные не найдены");
+      throw new NotFoundError('Данные не найдены');
     })
     .then((likedCard) => {
       res.status(200).send(likedCard);
@@ -64,7 +64,7 @@ const dislikeCard = (req, res, next) => {
     { new: true }
   )
     .orFail(() => {
-      throw new NotFoundError("Данные не найдены");
+      throw new NotFoundError('Данные не найдены');
     })
     .then((dislikedCard) => {
       res.status(200).send(dislikedCard);

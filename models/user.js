@@ -1,24 +1,24 @@
 const { Schema, model } = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
-const bcrypt = require("bcrypt");
-const AuthError = require("../errors/auth-error");
+const bcrypt = require('bcrypt');
+const AuthError = require('../errors/auth-error');
 
 const userSchema = new Schema({
   name: {
     type: String,
-    default: "Жак-Ив Кусто",
+    default: 'Жак-Ив Кусто',
     minlength: 2,
     maxlength: 30,
   },
   about: {
     type: String,
-    default: "Исследователь",
+    default: 'Исследователь',
     minlength: 2,
     maxlength: 30,
   },
   avatar: {
     type: String,
-    default: "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(v) {
         const regExpForUelValidate = /^((http|https):\/\/)(www\.)?([\w\W\d]{1,})(\.)([\w\W\d]{1,})$/g;
@@ -40,7 +40,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    default: "Жак-Ив Кусто",
+    default: 'Жак-Ив Кусто',
     required: true,
     minlength: 8,
     select: false,
@@ -56,7 +56,6 @@ userSchema.statics.findUserByCredentials = function (email, password) {
 
       return bcrypt.compare(password, user.password)
         .then((matched) => {
-          console.log(matched)
           if (!matched) {
             return Promise.reject(new AuthError('Неправильные почта или пароль'));
           }
