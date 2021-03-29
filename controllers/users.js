@@ -52,7 +52,10 @@ const createProfile = (req, res, next) => {
       password: hash,
     }))
     .then((user) => {
-      res.status(200).send({ user });
+      res.status(200).send({
+        message: 'Регистрация прошла успешно',
+        email: user.email,
+      });
     })
     .catch((err) => {
       if (err.name === 'MongoError') {

@@ -9,6 +9,7 @@ const cardsRouter = require('./routes/cards.js');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { login, createProfile } = require('./controllers/users');
+const NotFoundError = require('./errors/not-found-error');
 
 const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -47,8 +48,8 @@ app.post('/signup', celebrate({
 app.use(auth);
 app.use('/', usersRouter, cardsRouter);
 
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Запращиваемая страница не найдена'));
 });
 
 app.use(errorLogger);
